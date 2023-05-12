@@ -1,0 +1,198 @@
+﻿@page
+@model WebPDV.WApp.Pages.OrderProducts.CreateModel
+
+@{
+ViewData["Title"] = "Create";
+}
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous">
+
+<!-- Fontawesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-3H3E7Vqv33sI8lNP1Bp4d3q/e3I+OWU6nz/Pm6TjzRCJ2UyBOv1psg2KBgrY9P/WS62i/bpMUNkaaCthN0LJdA=="
+      crossorigin="anonymous" />
+
+<style>
+    h1,
+    h4 {
+        font-weight: bold;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+</style>
+
+<h1 class="text-center mb-5">Novo Pedido de Vendas</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <label for="OrderDate" class="col-md-3 col-form-label">Data do Pedido:</label>
+                <div class="col-md-9">
+                    <input type="date" id="OrderDate" name="Order.OrderDate" asp-for="Order.OrderDate" class="form-control" />
+                    <span asp-validation-for="Order.OrderDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="CustomerId" class="col-md-3 col-form-label">Cliente:</label>
+                <div class="col-md-9">
+                    <select id="CustomerId" name="Order.CustomerId" asp-for="Order.CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+                    <span asp-validation-for="Order.CustomerId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Produto</th>
+                                <th scope="col">Valor</th>
+                                <th scope="col">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.Products)
+                            {
+                                <tr>
+                                    <td>@product.Name</td>
+                                    <td>R$ @product.Price.ToString("0.00")</td>
+                                    <td>
+                                        @if (Model.OrderItems.Any(item => item.ProductId == product.Id))
+                                        {
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="addOneToOrderItem('@product.Id')"><i class="fas fa-plus"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="addToOrder('@product.Id', '@product.Name', '@product.Price', '1')">Adicionar</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Item</th>
+                                <th scope="col">Valor</th>
+                                <th scope="col">Quantidade</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderItems">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12 text-right">
+                    <h4>Total: <span id="orderTotal">R$ 0,00</span></h4>
+                </div>
+            </div>
+
+            <input type="hidden" name="OrderItems" id="orderItemsField" />
+            <div class="row justify-content-end">
+                <div class="col-md-8">
+                    <form method="post">
+                        <!-- ... -->
+                        <div class="form-group row">
+                            <div class="col-md-12 text-right">
+                                <a asp-page="Index" class="btn btn-secondary mr-2">Voltar para a Lista</a>
+                                <input type="submit" value="Cadastrar Pedido" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var products = @Html.Raw(Json.Serialize(Model.Products));
+        var orderItems = [];
+        function addToOrder(productId, productName, productPrice, productQuantity) {
+            var index = orderItems.findIndex(item => item.productId === productId);
+            if (index === -1) {
+                orderItems.push({ productId, productName, productPrice, productQuantity: 1 });
+            } else {
+                orderItems[index].productQuantity = parseInt(orderItems[index].productQuantity) + 1;
+            }
+            renderOrderItems();
+            calculateOrderTotal();
+            updateOrderItems();
+        }
+
+        function addOneToOrderItem(productId) {
+            var index = orderItems.findIndex(item => item.productId === productId);
+            if (index !== -1) {
+                orderItems[index].productQuantity = parseInt(orderItems[index].productQuantity) + 1;
+                renderOrderItems();
+                calculateOrderTotal();
+                updateOrderItems();
+            }
+        }
+
+        function removeFromOrder(index) {
+            orderItems.splice(index, 1);
+            renderOrderItems();
+            calculateOrderTotal();
+            updateOrderItems();
+        }
+
+        function renderOrderItems() {
+            var html = "";
+            orderItems.forEach(function (item, index) {
+                html += "<tr><td>" + item.productName + "</td><td>" + item.productPrice + "</td><td>" + item.productQuantity + "</td><td><button type=\"button\" class=\"btn btn-danger\" onclick=\"removeFromOrder(" + index + ")\">Remove</button></td></tr>";
+            });
+            $("#orderItems").html(html);
+        }
+
+        function updateOrderItems() {
+            renderOrderItems();
+            calculateOrderTotal();
+            $("#orderItemsField").val(JSON.stringify(orderItems));
+        }
+
+        function calculateOrderTotal() {
+            var total = 0;
+            orderItems.forEach(function (item) {
+                total += parseFloat(item.productPrice) * parseInt(item.productQuantity);
+            });
+            $("#orderTotal").html(total.toFixed(2));
+        }
+
+        $(function () {
+            $("#SearchTerm").on("input", function () {
+                var searchTerm = $(this).val().toLowerCase();
+                var filteredProducts = products.filter(function (product) {
+                    return product.name.toLowerCase().indexOf(searchTerm) !== -1;
+                });
+                Model.Products = filteredProducts;
+                renderOrderItems();
+                calculateOrderTotal();
+            });
+        });
+    </script>
+}

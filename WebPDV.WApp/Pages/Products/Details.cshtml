@@ -1,0 +1,28 @@
+﻿@page
+@model WebPDV.WApp.Pages.Products.DetailsModel
+
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<div class="container">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Product.Name</h5>
+                    <p class="card-text">@Model.Product.Description</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Preço: R$ @Model.Product.Price</li>
+                </ul>
+                <div class="card-body d-flex justify-content-between">
+                    <a asp-page="./Edit" asp-route-id="@Model.Product?.Id" class="btn btn-warning">Editar</a>
+                    <a asp-page="./Index" class="btn btn-secondary">Voltar para a Lista</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

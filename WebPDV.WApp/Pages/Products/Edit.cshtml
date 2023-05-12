@@ -1,0 +1,84 @@
+﻿@page
+@model WebPDV.WApp.Pages.Products.EditModel
+
+@{
+    ViewData["Title"] = "Editar Produto";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+            <form method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Product.Id" class="form-label">Id do Produto</label>
+                    <input asp-for="Product.Id" class="form-control" required readonly/>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Product.Name" class="form-label">Nome do Produto</label>
+                    <input asp-for="Product.Name" class="form-control" placeholder="Digite o nome do produto" required />
+                    <div class="invalid-feedback">
+                        Por favor, digite o nome do produto.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Product.Description" class="form-label">Descrição do Produto</label>
+                    <textarea asp-for="Product.Description" class="form-control" placeholder="Digite a descrição do produto" rows="3" required></textarea>
+                    <div class="invalid-feedback">
+                        Por favor, digite a descrição do produto.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Product.Price" class="form-label">Preço do Produto</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">R$</span>
+                        </div>
+                        <input asp-for="Product.Price" class="form-control" placeholder="Digite o preço do produto" required />
+                        <div class="invalid-feedback">
+                            Por favor, digite um preço válido para o produto.
+                        </div>
+                    </div>  
+                </div>
+
+                <div class="form-group d-flex justify-content-end mt-5">
+                    <a asp-page="Index" class="btn btn-secondary me-3">Cancelar</a>
+                    <button type="submit" class="btn btn-success">Salvar e Continuar</button>
+                </div>
+
+                <div class="mt-4"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Desabilita validação HTML5 padrão para estilos personalizados de validação
+        (function () {
+            'use strict';
+
+            // Busca todos os formulários que precisam de validação personalizada
+            var forms = document.querySelectorAll('.needs-validation');
+
+            // Loop pelos formulários e previne a validação padrão do HTML5
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+        })();
+    </script>
+}

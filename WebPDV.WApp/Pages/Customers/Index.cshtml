@@ -1,0 +1,169 @@
+﻿@page
+@model WebPDV.WApp.Pages.Customers.IndexModel
+
+@{
+    ViewData["Title"] = "Customers Index";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
+
+<h1 class="text-center mb-4">Clientes</h1>
+<div class="d-flex justify-content-end mb-4">
+    <a class="btn btn-primary" asp-page="Create">
+        <i class="bi bi-plus-lg me-2"></i>Novo
+    </a>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center" scope="col">Name</th>
+                <th class="text-center" scope="col">Email</th>
+                <th class="text-center" scope="col">Phone Number</th>
+                <th class="text-center" scope="col">Address</th>
+                <th class="text-center" scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model.Customer)
+            {
+                <tr>
+                    <td class="text-center">@Html.DisplayFor(modelItem => customer.Name)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => customer.Email)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => customer.PhoneNumber)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => customer.Address)</td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-primary me-2" asp-page="./Edit" asp-route-id="@customer.Id">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a class="btn btn-sm btn-danger delete-btn" data-id="@customer.Id">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <p class="m-0">
+        Showing @Model.Customer.Count customer(s)
+    </p>
+    <nav>
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Modal de confirmação de exclusão -->
+<div class="modal fade" id="confirm-delete-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-delete-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirm-delete
+-confirm-modal-title">Confirmar exclusão</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Tem certeza de que deseja excluir este cliente?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+                <button type="button" class="btn btn-danger confirm-delete-btn">Sim</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .table thead {
+            background-color: #333;
+            color: #fff;
+        }
+
+            .table thead th {
+                font-weight: 600;
+            }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+    .table-striped tbody tr:nth-child(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .table .btn {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(function () {
+            // Atribuir um evento de clique ao botão de exclusão
+            $('.delete-btn').click(function () {
+                // Obter o ID do cliente a ser excluído
+                var id = $(this).data('id');
+                // Configurar o botão de confirmação de exclusão para enviar o formulário de exclusão para o ID correto
+                $('.confirm-delete-btn').data('id', id);
+                // Mostrar o modal de confirmação de exclusão
+                $('#confirm-delete-modal').modal('show');
+            });
+
+            // Atribuir um evento de clique ao botão de confirmação de exclusão
+            $$('.confirm-delete-btn').click(function () {
+                // Obter o ID do cliente a ser excluído
+                var id = $(this).data('id');
+                // Enviar uma solicitação POST para o método OnPostAsync com o ID correto
+                $.ajax({
+                    type: "POST",
+                    url: "./Index",
+                    data: { id: id },
+                    success: function () {
+                        // Recarregar a página após a exclusão
+                        location.reload();
+                    },
+                    error: function () {
+                        // Exibir uma mensagem de erro em caso de falha na exclusão
+                        alert("Erro ao excluir o cliente.");
+                    }
+                });
+            });
+        });
+    </script>
+}
