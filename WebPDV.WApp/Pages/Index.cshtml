@@ -1,0 +1,168 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Página Inicial";
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Total de Vendas</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Últimos 30 dias</h6>
+                    <p class="card-text fs-2 text-success">R$1.541.654,00</p>
+                    <p class="card-text fs-5">Número de pedidos: 10.654</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Total em Estoque</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Últimos 30 dias</h6>
+                    <p class="card-text fs-2 text-info">6.764 unidades</p>
+                    <p class="card-text fs-5">Número de pedidos: 10.654</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Total de Pedidos</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Últimos 30 dias</h6>
+                    <p class="card-text fs-2 text-warning">10.542 unidades</p>
+                    <p class="card-text fs-5">Número de pedidos: 10.654</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Produtos Mais Vendidos</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Últimos 30 dias</h6>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Vendas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Produto A</td>
+                                <td>6421</td>
+                            </tr>
+                            <tr>
+                                <td>Produto B</td>
+                                <td>5012</td>
+                            </tr>
+                            <tr>
+                                <td>Produto C</td>
+                                <td>1641</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Clientes Recentes</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Últimos 30 dias</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-success"></i>Latam Airlines</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-warning"></i>Gol Linhas Aereas</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-danger"></i>Tursky Airlines</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-danger"></i>Tursky Airlines</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Status das Entregas</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Últimos 30 dias</h6>
+                    <div class="progress mt-3">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                            <span class="d-flex justify-content-between align-items-center">
+                                <span>Entregue</span>
+                                <span>75%</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress mt-3">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                            <span class="d-flex justify-content-between align-items-center">
+                                <span>Em Trânsito</span>
+                                <span>20%</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress mt-3">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 15%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100">
+                            <span class="d-flex justify-content-between align-items-center">
+                                <span>Cancelado</span>
+                                <span>15%</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>     
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Gráfico de Vendas</h5>
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+            @section Scripts {
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                            datasets: [{
+                                label: 'Vendas',
+                                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                borderColor: 'rgba(0, 123, 255, 1)',
+                                borderWidth: 1,
+                                data: [50, 75, 100, 150, 125, 175]
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        fontColor: "#6c757d",
+                                    },
+                                    gridLines: {
+                                        color: "#e9ecef"
+                                    }
+                                }],
+                                xAxes: [{
+                                    ticks: {
+                                        fontColor: "#6c757d",
+                                    },
+                                    gridLines: {
+                                        color: "#e9ecef"
+                                    }
+                                }]
+                            },
+                            legend: {
+                                labels: {
+                                    fontColor: "#6c757d",
+                                }
+                            }
+                        }
+                    });
+                </script>
+            }

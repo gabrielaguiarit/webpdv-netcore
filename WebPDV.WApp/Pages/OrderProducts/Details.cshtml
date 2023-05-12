@@ -1,0 +1,63 @@
+﻿@page
+@model WebPDV.WApp.Pages.OrderProducts.DetailsModel
+
+@{
+    ViewData["Title"] = "Pedido de Venda";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4 class="mb-0">Pedido n.: @Html.DisplayFor(model => model.Order.OrderId)</h4>
+    </div>
+    <div class="card-body">
+        <div class="row mt-3">
+            <div class="col-sm-3 font-weight-bold">Data do Pedido:</div>
+            <div class="col-sm-9">@Html.DisplayFor(model => model.Order.OrderDate)</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-sm-3 font-weight-bold">Cliente:</div>
+            <div class="col-sm-9">@Html.DisplayFor(model => model.Order.Customer.Name)</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">Itens do Pedido</h4>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantidade</th>
+                        <th>Valor</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Order.OrderItems)
+                    {
+                        <tr>
+                            <td>@item.Product.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Product.Price.ToString("C")</td>
+                            <td>@(item.Quantity * item.Product.Price)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <form method="post" asp-page-handler="OnPostAsync">
+        <input type="hidden" name="id" value="@Model.Order.OrderId" />
+        <button type="submit" class="btn btn-primary">Enviar por Email</button>
+        <a class="btn btn-secondary ml-2" asp-page="./Index">Voltar</a>
+    </form>
+</div>
